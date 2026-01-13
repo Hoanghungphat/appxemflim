@@ -90,7 +90,7 @@ const SearchScreen = ({ navigation }) => {
     } else {
       setLoading(true);
     }
-    
+
     setError(null);
 
     try {
@@ -209,9 +209,9 @@ const SearchScreen = ({ navigation }) => {
 
   const renderVideoCard = useCallback(
     ({ item }) => (
-      <VideoCard video={item} onPress={() => handleVideoPress(item)} />
+      <VideoCard video={item} onPress={() => handleVideoPress(item)} navigation={navigation} />
     ),
-    [handleVideoPress]
+    [handleVideoPress, navigation]
   );
 
   const renderSuggestion = useCallback(({ item }) => (
@@ -262,7 +262,7 @@ const SearchScreen = ({ navigation }) => {
           <TextInput
             ref={inputRef}
             style={styles.searchInput}
-            placeholder="Tìm trên YouTube"
+            placeholder="Tìm trên GoldTurf"
             placeholderTextColor={TetColors.textDisabled}
             value={query}
             onChangeText={(text) => {
@@ -298,7 +298,7 @@ const SearchScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      
+
       {showSuggestions && suggestions.length > 0 && (
         <FlatList
           data={suggestions}
@@ -310,13 +310,13 @@ const SearchScreen = ({ navigation }) => {
           style={styles.suggestionsList}
         />
       )}
-      
+
       {loadingSuggestions && (
         <View style={styles.suggestionsLoader}>
           <ActivityIndicator size="small" color={TetColors.gold} />
         </View>
       )}
-      
+
       {hasSearched && !showSuggestions && (
         <View style={styles.resultsContainer}>
           <Text style={styles.resultsText}>
@@ -330,9 +330,9 @@ const SearchScreen = ({ navigation }) => {
   const renderFooter = () => {
     if (!loadingMore) return null;
     return (
-        <View style={styles.footerLoader}>
-          <ActivityIndicator size="small" color={TetColors.gold} />
-        </View>
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={TetColors.gold} />
+      </View>
     );
   };
 
@@ -406,32 +406,30 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: TetColors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: TetColors.border,
   },
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     paddingVertical: 8,
   },
   backButton: {
     padding: 8,
-    marginRight: 8,
+    marginRight: 4,
   },
   searchBar: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#212121',
-    borderRadius: 8,
+    backgroundColor: TetColors.backgroundElevated,
+    borderRadius: 20,
     paddingHorizontal: 16,
-    height: 48,
+    height: 40,
   },
   searchInput: {
     flex: 1,
     color: TetColors.textPrimary,
-    fontSize: 16,
+    fontSize: 15,
     paddingVertical: 0,
   },
   micButton: {
@@ -486,8 +484,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
   listContent: {
-    padding: 16,
-    paddingTop: 12,
+    paddingHorizontal: 12,
+    paddingTop: 8,
   },
   listContentEmpty: {
     flexGrow: 1,

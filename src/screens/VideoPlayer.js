@@ -6,14 +6,13 @@ import {
   StyleSheet,
   ActivityIndicator,
   Dimensions,
-  Platform,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { getVideoDetails } from '../api/youtube';
 import { Ionicons } from '@expo/vector-icons';
-import { TetColors, TetGradients } from '../theme/colors';
+import { TetColors } from '../theme/colors';
 
 const { width } = Dimensions.get('window');
 const VIDEO_HEIGHT = (width * 9) / 16; // 16:9 aspect ratio
@@ -138,62 +137,72 @@ const VideoPlayer = ({ route, navigation }) => {
           />
         </View>
 
-        <LinearGradient
-          colors={TetGradients.background}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.detailsGradient}
-        >
-          <View style={styles.detailsContainer}>
-            <Text style={styles.title}>{title}</Text>
+        <View style={styles.detailsContainer}>
+          {/* Title */}
+          <Text style={styles.title}>{title}</Text>
 
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <Ionicons name="eye-outline" size={18} color={TetColors.textTertiary} />
-                <Text style={styles.statText}>{viewCount} lượt xem</Text>
-              </View>
-              {likeCount !== '0' && (
-                <View style={styles.statItem}>
-                  <Ionicons name="thumbs-up-outline" size={18} color={TetColors.textTertiary} />
-                  <Text style={styles.statText}>{likeCount} thích</Text>
-                </View>
-              )}
-              {publishedAt && (
-                <View style={styles.statItem}>
-                  <Ionicons name="calendar-outline" size={16} color={TetColors.textTertiary} />
-                  <Text style={styles.publishedDate}>{publishedAt}</Text>
-                </View>
-              )}
-            </View>
-
-            <View style={styles.channelContainer}>
-              <View style={styles.channelInfo}>
-                <LinearGradient
-                  colors={[TetColors.gold, TetColors.red]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.channelAvatar}
-                >
-                  <Text style={styles.channelInitial}>
-                    {channelTitle.charAt(0).toUpperCase()}
-                  </Text>
-                </LinearGradient>
-                <View style={styles.channelDetails}>
-                  <Text style={styles.channelName}>{channelTitle}</Text>
-                  <Text style={styles.channelSubtext}>Kênh YouTube</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.descriptionContainer}>
-              <View style={styles.descriptionTitleContainer}>
-                <Ionicons name="document-text-outline" size={18} color={TetColors.gold} />
-                <Text style={styles.descriptionTitle}>Mô tả</Text>
-              </View>
-              <Text style={styles.description}>{description}</Text>
+          {/* Stats and Actions Row */}
+          <View style={styles.statsRow}>
+            <View style={styles.viewsContainer}>
+              <Text style={styles.viewsText}>{viewCount} lượt xem</Text>
+              <Text style={styles.dateText}>{publishedAt}</Text>
             </View>
           </View>
-        </LinearGradient>
+
+          {/* Action Buttons */}
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="thumbs-up-outline" size={24} color={TetColors.textPrimary} />
+              <Text style={styles.actionText}>{likeCount}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="thumbs-down-outline" size={24} color={TetColors.textPrimary} />
+              <Text style={styles.actionText}>Không thích</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="share-outline" size={24} color={TetColors.textPrimary} />
+              <Text style={styles.actionText}>Chia sẻ</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="download-outline" size={24} color={TetColors.textPrimary} />
+              <Text style={styles.actionText}>Tải xuống</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Divider */}
+          <View style={styles.divider} />
+
+          {/* Channel Section */}
+          <View style={styles.channelContainer}>
+            <View style={styles.channelInfo}>
+              <View style={styles.channelAvatar}>
+                <Text style={styles.channelInitial}>
+                  {channelTitle.charAt(0).toUpperCase()}
+                </Text>
+              </View>
+              <View style={styles.channelDetails}>
+                <Text style={styles.channelName}>{channelTitle}</Text>
+                <Text style={styles.subscriberCount}>1.2M người đăng ký</Text>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.subscribeButton}>
+              <Text style={styles.subscribeText}>ĐĂNG KÝ</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Divider */}
+          <View style={styles.divider} />
+
+          {/* Description */}
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.description} numberOfLines={3}>
+              {description}
+            </Text>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -251,87 +260,79 @@ const styles = StyleSheet.create({
   webView: {
     opacity: 0.99,
   },
-  detailsGradient: {
-    borderTopWidth: 1,
-    borderTopColor: TetColors.border,
-  },
   detailsContainer: {
-    padding: 20,
+    padding: 16,
   },
   title: {
     color: TetColors.textPrimary,
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 16,
-    lineHeight: 30,
-    letterSpacing: 0.3,
+    fontSize: 18,
+    fontWeight: '600',
+    lineHeight: 24,
+    marginBottom: 8,
   },
-  statsContainer: {
+  statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 20,
-    gap: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: TetColors.backgroundCard,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: TetColors.border,
+    justifyContent: 'space-between',
+    marginBottom: 12,
   },
-  statItem: {
+  viewsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
-  statText: {
+  viewsText: {
     color: TetColors.textSecondary,
-    fontSize: 15,
-    fontWeight: '500',
-    letterSpacing: 0.2,
-  },
-  publishedDate: {
-    color: TetColors.textTertiary,
     fontSize: 14,
     fontWeight: '500',
-    marginLeft: 4,
+  },
+  dateText: {
+    color: TetColors.textTertiary,
+    fontSize: 14,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 8,
+    marginBottom: 8,
+  },
+  actionButton: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  actionText: {
+    color: TetColors.textSecondary,
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: TetColors.border,
+    marginVertical: 12,
   },
   channelContainer: {
-    paddingVertical: 20,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: TetColors.border,
-    marginBottom: 20,
-    backgroundColor: TetColors.backgroundCard,
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
   },
   channelInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   channelAvatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: TetColors.gold,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: TetColors.gold,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    marginRight: 12,
   },
   channelInitial: {
-    color: TetColors.textPrimary,
-    fontSize: 24,
+    color: '#000000',
+    fontSize: 18,
     fontWeight: '700',
   },
   channelDetails: {
@@ -339,41 +340,32 @@ const styles = StyleSheet.create({
   },
   channelName: {
     color: TetColors.textPrimary,
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 6,
-    letterSpacing: 0.3,
-  },
-  channelSubtext: {
-    color: TetColors.textTertiary,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  subscriberCount: {
+    color: TetColors.textTertiary,
+    fontSize: 12,
+  },
+  subscribeButton: {
+    backgroundColor: TetColors.gold,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 18,
+  },
+  subscribeText: {
+    color: '#000000',
+    fontSize: 14,
+    fontWeight: '700',
   },
   descriptionContainer: {
-    marginBottom: 24,
-    backgroundColor: TetColors.backgroundCard,
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: TetColors.border,
-  },
-  descriptionTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  descriptionTitle: {
-    color: TetColors.textPrimary,
-    fontSize: 17,
-    fontWeight: '700',
-    letterSpacing: 0.3,
+    paddingVertical: 8,
   },
   description: {
     color: TetColors.textSecondary,
-    fontSize: 15,
-    lineHeight: 24,
-    letterSpacing: 0.2,
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
 

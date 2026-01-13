@@ -2,11 +2,11 @@ import React from 'react';
 import { TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
-import { LinearGradient } from 'expo-linear-gradient';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import VideoPlayer from '../screens/VideoPlayer';
-import { TetColors, TetGradients } from '../theme/colors';
+import ChannelScreen from '../screens/ChannelScreen';
+import { TetColors } from '../theme/colors';
 
 const Stack = createStackNavigator();
 
@@ -48,7 +48,7 @@ const AppNavigator = () => {
           },
           headerRight: () => (
             <TouchableOpacity
-              style={{ 
+              style={{
                 marginRight: 20,
                 width: 40,
                 height: 40,
@@ -69,7 +69,15 @@ const AppNavigator = () => {
         name="Search"
         component={SearchScreen}
         options={{
-          title: 'Tìm kiếm',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="VideoPlayer"
+        component={VideoPlayer}
+        options={{
+          title: 'Video',
+          headerShown: true,
           headerTitleStyle: {
             fontWeight: '700',
             fontSize: 20,
@@ -79,10 +87,10 @@ const AppNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="VideoPlayer"
-        component={VideoPlayer}
+        name="Channel"
+        component={ChannelScreen}
         options={{
-          title: 'Video',
+          title: 'Kênh',
           headerShown: true,
           headerTitleStyle: {
             fontWeight: '700',

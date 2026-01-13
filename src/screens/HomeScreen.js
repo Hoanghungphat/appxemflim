@@ -48,14 +48,14 @@ const HomeScreen = ({ navigation }) => {
       const pageToken = isRefresh ? null : nextPageToken;
       const data = await getPopularVideos(pageToken, 20);
       const videoItems = data.items || [];
-      
+
       // Get statistics for each video
       const videosWithStats = videoItems.map(item => ({
         id: item.id,
         snippet: item.snippet,
         statistics: item.statistics,
       }));
-      
+
       if (isRefresh) {
         setVideos(videosWithStats);
       } else {
@@ -66,7 +66,7 @@ const HomeScreen = ({ navigation }) => {
           return [...prev, ...newVideos];
         });
       }
-      
+
       setNextPageToken(data.nextPageToken || null);
       setHasMore(!!data.nextPageToken);
     } catch (err) {
@@ -167,15 +167,15 @@ const HomeScreen = ({ navigation }) => {
 
   const renderVideoCard = useCallback(
     ({ item }) => (
-      <VideoCard video={item} onPress={() => handleVideoPress(item)} />
+      <VideoCard video={item} onPress={() => handleVideoPress(item)} navigation={navigation} />
     ),
-    [handleVideoPress]
+    [handleVideoPress, navigation]
   );
 
   const renderFilterBar = () => (
     <View style={styles.filterContainer}>
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.filterScrollContent}
       >
@@ -243,21 +243,8 @@ const HomeScreen = ({ navigation }) => {
   );
 
 
-  const renderHeader = () => (
-    <View>
-      {/* <View style={styles.header}>
-        <Text style={styles.appTitle}>GoldTurf</Text>
-        <TouchableOpacity
-          style={styles.searchButton}
-          onPress={() => navigation.navigate('Search')}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="search" size={24} color={TetColors.gold} />
-        </TouchableOpacity>
-      </View> */}
-      {renderFilterBar()}
-    </View>
-  );
+
+  const renderHeader = () => renderFilterBar();
 
   const renderFooter = () => {
     if (!loadingMore) return null;
@@ -323,46 +310,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 12,
     backgroundColor: TetColors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: '#3a3a3a',
   },
   appTitle: {
     color: TetColors.gold,
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
   },
   searchButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: `${TetColors.gold}20`,
+    backgroundColor: TetColors.backgroundElevated,
     justifyContent: 'center',
     alignItems: 'center',
   },
   filterContainer: {
-    backgroundColor: TetColors.backgroundSecondary,
-    borderBottomWidth: 1,
-    borderBottomColor: TetColors.border,
+    backgroundColor: TetColors.background,
+    paddingVertical: 8,
   },
   filterScrollContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 10,
+    paddingHorizontal: 12,
+    gap: 8,
   },
   filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 18,
-    backgroundColor: '#303030',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: TetColors.backgroundElevated,
     marginRight: 8,
   },
   filterButtonActive: {
     backgroundColor: '#FFFFFF',
   },
   filterText: {
-    color: '#FFFFFF',
+    color: TetColors.textPrimary,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -371,7 +354,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   listContent: {
-    paddingTop: 8,
+    paddingHorizontal: 12,
+    paddingTop: 4,
   },
   loadingContainer: {
     flex: 1,
